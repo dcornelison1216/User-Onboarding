@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import axios from 'axios';
 
 const FormDiv = styled.div`
 display: flex;
@@ -25,30 +26,90 @@ border-radius: 3px;
 `;
 
 const Form = () => {
+
+  const [post, setPost] = useState([]);
+  const [formState, setFormState] = useState({name: "", email: "", password: "", terms: ""});
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [errors, setErrors] = useState({name: "", email: "", password: "", terms: ""})
+
+  const formSchema = yup.object().shape({
+    name: yup.string().required("Please enter your name"),
+    email: yup.string()
+      .required("Please enter a valid email address")
+      .email("Please enter a valid email address"),
+    password: yup.string().min(12).required("Your password must be at least 12 characters long"),
+    terms: yup.boolean().oneOf([true], "Please read and agree to our Terms & Conditions")
+  });
+
+  const validateChange = e => {
+    yup
+      .reach(formSchema, e.target.name)
+      .validate(e.target.value)
+      .then(valid => {
+        setErrors({ ...errors, [e.target.name]: "" });
+      })
+      .catch(err => setErrors({ ...errors, [e.target.name]: err.errors[0] }));
+  };
+
+  useEffect(() => {
+    formSchema.isValid(formState).then(valid => {
+      console.log("valid?", valid);
+      setIsButtonDisabled(!valid);
+    });
+  }, [formState]);
+
+  const formSubmit = e => {
+    e.preventDefault();
+    axios
+      .post("https://reqres.in/api/users", formState)
+      .then(response => {
+        setPost(response.data);
+        setFormState({name: "", email: "", password: "", terms: ""});
+      })
+      .catch(err => console.log(err.response));
+  };
+
+  const inputChange = e => {
+    console.log("input changed!", e.target.value);
+    e.persist();
+    const newFormData = {
+      ...formState,
+      [e.target.name]: e.target.type === "checkbox" ? e.target.checked : e.target.value
+    };
+    validateChange(e);
+    setFormState(newFormData);
+  };
+
   return (
     <FormDiv>
       <Label htmlFor="name">
         Name:
-        <Input id="name" type="text" name="name" />
+        <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} />
+        {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
       </Label>
 
       <Label htmlFor="email">
         Email:
-        <Input id="email" type="text" name="email" />
+        <Input id="email" type="text" name="email" onChange={inputChange} value={formState.email} />
+        {errors.email.length > 0 ? <p className="error">{errors.email}</p> : null}
       </Label>
 
       <Label htmlFor="password">
         Password:
-        <Input id="password" type="text" name="password" />
+        <Input id="password" type="text" name="password" onChange={inputChange} value={formState.password} />
+        {errors.password.length > 0 ? <p className="error">{errors.password}</p> : null}
       </Label>
 
       <Label htmlFor="terms">
+        <Input type="checkbox" name="terms" id="terms" checked={formState.terms} onChange={inputChange} />
         Terms & Conditions
-        <Input type="checkbox" name="terms" id="terms" checked={false} />
+        {errors.terms.length > 0 ? <p className="error">{errors.terms}</p> : null}
       </Label>
 
+      <pre>{JSON.stringify(post, null, 2)}</pre>
+
       <Label htmlFor="submit">
-        <SubmitButton type="submit" disabled={false}>Submit</SubmitButton>
+        <SubmitButton type="submit" disabled={isButtonDisabled}>Submit</SubmitButton>
       </Label>
     </FormDiv>
   );
