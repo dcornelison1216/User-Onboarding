@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-import { StyledForm, SubmitButton, Label, Input } from './formStyles'
+import { StyledForm, SubmitButton, Label, Input } from '../AppStyles';
 import { SchemaShape } from './SchemaShape';
 
 const Form = ({ addNewUser }) => {
@@ -27,11 +27,12 @@ const Form = ({ addNewUser }) => {
     formSchema.isValid(formState).then(valid => {
       setIsButtonDisabled(!valid);
     });
-  }, [formState]);
+  }, [formState, formSchema]);
 
   const formSubmit = e => {
     e.preventDefault();
     addNewUser(user);
+    console.log(user);
     setUser({name: "", email: "", password: "", terms: false});
     axios
       .post("https://reqres.in/api/users", formState)
