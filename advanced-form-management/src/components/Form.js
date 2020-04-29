@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-import Users from './Users'
 import { StyledForm, SubmitButton, Label, Input } from './formStyles'
 import { SchemaShape } from './SchemaShape';
 
@@ -37,10 +36,9 @@ const Form = () => {
       .post("https://reqres.in/api/users", formState)
       .then(response => {
         setPost(response.data);
-        setUsers(...users, response.data)
         setFormState({name: "", email: "", password: "", terms: ""});
+        return response;
       })
-      .then(console.log("users", users))
       .catch(err => console.log(err.response));
   };
 
