@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import axios from 'axios';
 import Users from './Users'
 import { StyledForm, SubmitButton, Label, Input } from './formStyles'
+import { SchemaShape } from './SchemaShape';
 
 const Form = () => {
 
@@ -12,14 +13,7 @@ const Form = () => {
   const [errors, setErrors] = useState({name: "", email: "", password: "", terms: ""});
   const [users, setUsers] = useState([]);
 
-  const formSchema = yup.object().shape({
-    name: yup.string().required("Please enter your name"),
-    email: yup.string()
-      .required("Please enter a valid email address")
-      .email("Please enter a valid email address"),
-    password: yup.string().min(12).required("Your password must be at least 12 characters long"),
-    terms: yup.bool().oneOf([true], "Please read and accept the Terms & Conditions")
-  });
+  const formSchema = yup.object().shape(SchemaShape);
 
   const validateChange = e => {
     yup
