@@ -1,30 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import * as yup from 'yup';
 import axios from 'axios';
-
-const FormDiv = styled.form`
-display: flex;
-flex-direction: column;
-`;
-
-const SubmitButton = styled.button`
-font-size: 1.6rem;
-background-color: lightgray;
-border-radius: 5px;
-width: 150px;
-`;
-
-const Label = styled.label`
-font-size: 1.5rem;
-margin: .5rem;
-`;
-
-const Input = styled.input`
-background-color: lightskyblue;
-margin-left: .5rem;
-border-radius: 3px;
-`;
+import Users from './Users'
+import { StyledForm, SubmitButton, Label, Input } from './formStyles'
 
 const Form = () => {
 
@@ -55,7 +33,6 @@ const Form = () => {
 
   useEffect(() => {
     formSchema.isValid(formState).then(valid => {
-      console.log("valid?", valid);
       setIsButtonDisabled(!valid);
     });
   }, [formState]);
@@ -66,13 +43,14 @@ const Form = () => {
       .post("https://reqres.in/api/users", formState)
       .then(response => {
         setPost(response.data);
+        setUsers(...users, response.data)
         setFormState({name: "", email: "", password: "", terms: ""});
       })
+      .then(console.log("users", users))
       .catch(err => console.log(err.response));
   };
 
   const inputChange = e => {
-    console.log("input changed!", e.target.value);
     e.persist();
     const newFormData = {
       ...formState,
@@ -85,7 +63,7 @@ const Form = () => {
 
 
   return (
-    <FormDiv onSubmit={formSubmit}>
+    <StyledForm onSubmit={formSubmit}>
       <Label htmlFor="name">
         Name:
         <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} />
@@ -114,7 +92,7 @@ const Form = () => {
 
       <pre>{JSON.stringify(post, null, 2)}</pre>
 
-    </FormDiv>
+    </StyledForm>
   );
 }
 
