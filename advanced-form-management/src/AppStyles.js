@@ -19,7 +19,6 @@ color: white;
 
 export const UserCard = styled.div`
 background: linear-gradient(90deg, #b2c1ff 0%,#fffba3 80%);
-width: 100%;
 max-width: 250px;
 box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, .5), 5px 5px 5px rgba(0, 0, 0, .25);
 padding: 10px;
@@ -33,10 +32,13 @@ display: flex;
 flex-wrap: wrap;
 justify-content: space-evenly;
 flex-direction: row;
+width: 100vw;
 `;
 
 export const Name = styled.h2`
 text-transform: capitalize;
+font-size: 2rem;
+color: black;
 `;
 
 export const StyledForm = styled.form`
@@ -61,4 +63,14 @@ export const Input = styled.input`
 background-color: lightskyblue;
 margin-left: .5rem;
 border-radius: 3px;
+`;
+
+export const Email = styled.p`
+font-size: 1.5rem;
+color: black;
+`;
+
+export const Password = styled.p`
+font-size: 1.5rem;
+color: black;
 `;

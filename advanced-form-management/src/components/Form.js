@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-import { StyledForm, SubmitButton, Label, Input } from '../AppStyles';
+import { StyledForm, SubmitButton, Label, Input, CardsContainer } from '../AppStyles';
 import { SchemaShape } from './SchemaShape';
+import Users from './Users';
 
-const Form = ({ addNewUser }) => {
+const Form = () => {
 
   const [post, setPost] = useState([]);
   const [formState, setFormState] = useState({name: "", email: "", password: "", terms: ""});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [errors, setErrors] = useState({name: "", email: "", password: "", terms: ""});
-  const [user, setUser] = useState({name: "", email: "", password: "", terms: ""})
   const formSchema = yup.object().shape(SchemaShape);
+  const [users, setUsers] = useState([]);
 
   const validateChange = e => {
     yup
@@ -31,22 +32,20 @@ const Form = ({ addNewUser }) => {
 
   const formSubmit = e => {
     e.preventDefault();
-    addNewUser(user);
-    console.log(user);
-    setUser({name: "", email: "", password: "", terms: false});
     axios
       .post("https://reqres.in/api/users", formState)
       .then(response => {
         setPost(response.data);
         setFormState({name: "", email: "", password: "", terms: ""});
+        addNewUser(response.data);
         return response;
       })
+      .then(console.log("users", users))
       .catch(err => console.log(err.response));
   };
 
   const inputChange = e => {
     e.persist();
-    setUser({ ...user, [e.target.id]: e.target.value });
     const newFormData = {
       ...formState,
       [e.target.name]:
@@ -56,38 +55,53 @@ const Form = ({ addNewUser }) => {
     setFormState(newFormData);
   };
 
+  const addNewUser = user => {
+    const newUser = {
+      id: Date.now(),
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      terms: user.terms
+    };
+    setUsers([...users, newUser]);
+  };
 
   return (
-    <StyledForm onSubmit={formSubmit}>
-      <Label htmlFor="name">
-        Name:
-        <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} />
-        {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
-      </Label>
+    <div className="form">
+      <StyledForm onSubmit={formSubmit}>
+        <Label htmlFor="name">
+          Name:
+          <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} />
+          {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
+        </Label>
 
-      <Label htmlFor="email">
-        Email:
-        <Input id="email" type="text" name="email" onChange={inputChange} value={formState.email} />
-        {errors.email.length > 0 ? <p className="error">{errors.email}</p> : null}
-      </Label>
+        <Label htmlFor="email">
+          Email:
+          <Input id="email" type="text" name="email" onChange={inputChange} value={formState.email} />
+          {errors.email.length > 0 ? <p className="error">{errors.email}</p> : null}
+        </Label>
 
-      <Label htmlFor="password">
-        Password:
-        <Input id="password" type="text" name="password" onChange={inputChange} value={formState.password} />
-        {errors.password.length > 0 ? <p className="error">{errors.password}</p> : null}
-      </Label>
+        <Label htmlFor="password">
+          Password:
+          <Input id="password" type="text" name="password" onChange={inputChange} value={formState.password} />
+          {errors.password.length > 0 ? <p className="error">{errors.password}</p> : null}
+        </Label>
 
-      <Label htmlFor="terms" className="terms">
-        <Input type="checkbox" name="terms" id="terms" checked={formState.terms} onChange={inputChange} />
-        Terms & Conditions
-        {errors.terms.length > 0 ? <p className="error">{errors.terms}</p> : null}
-      </Label>
+        <Label htmlFor="terms" className="terms">
+          <Input type="checkbox" name="terms" id="terms" checked={formState.terms} onChange={inputChange} />
+          Terms & Conditions
+          {errors.terms.length > 0 ? <p className="error">{errors.terms}</p> : null}
+        </Label>
 
-      <SubmitButton type="submit" disabled={isButtonDisabled}>Submit</SubmitButton>
+        <SubmitButton type="submit" disabled={isButtonDisabled}>Submit</SubmitButton>
 
-      <pre>{JSON.stringify(post, null, 2)}</pre>
+        <pre>{JSON.stringify(post, null, 2)}</pre>
 
-    </StyledForm>
+      </StyledForm>
+
+      <Users users={users} />
+
+    </div>
   );
 }
 
