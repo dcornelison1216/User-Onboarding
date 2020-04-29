@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-import { StyledForm, SubmitButton, Label, Input, CardsContainer } from '../AppStyles';
+import { StyledForm, SubmitButton, Label, Input, NameLabel, EmailLabel, FormHeader } from '../AppStyles';
 import { SchemaShape } from './SchemaShape';
 import Users from './Users';
 
 const Form = () => {
 
-  const [post, setPost] = useState([]);
   const [formState, setFormState] = useState({name: "", email: "", password: "", terms: ""});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [errors, setErrors] = useState({name: "", email: "", password: "", terms: ""});
@@ -35,12 +34,10 @@ const Form = () => {
     axios
       .post("https://reqres.in/api/users", formState)
       .then(response => {
-        setPost(response.data);
         setFormState({name: "", email: "", password: "", terms: ""});
         addNewUser(response.data);
         return response;
       })
-      .then(console.log("users", users))
       .catch(err => console.log(err.response));
   };
 
@@ -69,17 +66,18 @@ const Form = () => {
   return (
     <div className="form">
       <StyledForm onSubmit={formSubmit}>
-        <Label htmlFor="name">
+        <FormHeader>Become a new user!</FormHeader>
+        <NameLabel htmlFor="name">
           Name:
           <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} />
           {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
-        </Label>
+        </NameLabel>
 
-        <Label htmlFor="email">
+        <EmailLabel htmlFor="email">
           Email:
           <Input id="email" type="text" name="email" onChange={inputChange} value={formState.email} />
           {errors.email.length > 0 ? <p className="error">{errors.email}</p> : null}
-        </Label>
+        </EmailLabel>
 
         <Label htmlFor="password">
           Password:
@@ -94,8 +92,6 @@ const Form = () => {
         </Label>
 
         <SubmitButton type="submit" disabled={isButtonDisabled}>Submit</SubmitButton>
-
-        <pre>{JSON.stringify(post, null, 2)}</pre>
 
       </StyledForm>
 

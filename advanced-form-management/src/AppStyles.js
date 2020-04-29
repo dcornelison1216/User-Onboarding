@@ -38,7 +38,7 @@ width: 100vw;
 export const Name = styled.h2`
 text-transform: capitalize;
 font-size: 2rem;
-color: black;
+color: #282c34;
 `;
 
 export const StyledForm = styled.form`
@@ -56,7 +56,17 @@ margin: auto;
 
 export const Label = styled.label`
 font-size: 1.5rem;
-margin: .5rem;
+margin: .5rem 2.5rem .5rem .5rem;
+`;
+
+export const NameLabel = styled.label`
+font-size: 1.5rem;
+margin: .5rem 2.5rem .5rem 2.9rem;
+`;
+
+export const EmailLabel = styled.label`
+font-size: 1.5rem;
+margin: .5rem 2.5rem .5rem 3.2rem;
 `;
 
 export const Input = styled.input`
@@ -67,10 +77,17 @@ border-radius: 3px;
 
 export const Email = styled.p`
 font-size: 1.5rem;
-color: black;
+color: #282c34;
 `;
 
 export const Password = styled.p`
 font-size: 1.5rem;
-color: black;
+color: #282c34;
+`;
+
+export const FormHeader = styled.h2`
+background: linear-gradient(270deg, #b2c1ff 0%,#fffba3 80%);
+color: #282c34;
+width: 30rem;
+margin: 2rem auto;
 `;
