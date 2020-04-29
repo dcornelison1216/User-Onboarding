@@ -4,14 +4,13 @@ import axios from 'axios';
 import { StyledForm, SubmitButton, Label, Input } from './formStyles'
 import { SchemaShape } from './SchemaShape';
 
-const Form = () => {
+const Form = ({ addNewUser }) => {
 
   const [post, setPost] = useState([]);
   const [formState, setFormState] = useState({name: "", email: "", password: "", terms: ""});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [errors, setErrors] = useState({name: "", email: "", password: "", terms: ""});
-  const [users, setUsers] = useState([]);
-
+  const [user, setUser] = useState({name: "", email: "", password: "", terms: ""})
   const formSchema = yup.object().shape(SchemaShape);
 
   const validateChange = e => {
@@ -32,6 +31,8 @@ const Form = () => {
 
   const formSubmit = e => {
     e.preventDefault();
+    addNewUser(user);
+    setUser({name: "", email: "", password: "", terms: false});
     axios
       .post("https://reqres.in/api/users", formState)
       .then(response => {
@@ -44,6 +45,7 @@ const Form = () => {
 
   const inputChange = e => {
     e.persist();
+    setUser({ ...user, [e.target.id]: e.target.value });
     const newFormData = {
       ...formState,
       [e.target.name]:
