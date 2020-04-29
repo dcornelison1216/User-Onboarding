@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import * as yup from 'yup';
 import axios from 'axios';
 
-const FormDiv = styled.div`
+const FormDiv = styled.form`
 display: flex;
 flex-direction: column;
 `;
@@ -12,6 +12,7 @@ const SubmitButton = styled.button`
 font-size: 1.6rem;
 background-color: lightgray;
 border-radius: 5px;
+width: 150px;
 `;
 
 const Label = styled.label`
@@ -30,7 +31,8 @@ const Form = () => {
   const [post, setPost] = useState([]);
   const [formState, setFormState] = useState({name: "", email: "", password: "", terms: ""});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [errors, setErrors] = useState({name: "", email: "", password: "", terms: ""})
+  const [errors, setErrors] = useState({name: "", email: "", password: "", terms: ""});
+  const [users, setUsers] = useState([]);
 
   const formSchema = yup.object().shape({
     name: yup.string().required("Please enter your name"),
@@ -38,13 +40,13 @@ const Form = () => {
       .required("Please enter a valid email address")
       .email("Please enter a valid email address"),
     password: yup.string().min(12).required("Your password must be at least 12 characters long"),
-    terms: yup.boolean().oneOf([true], "Please read and agree to our Terms & Conditions")
+    terms: yup.bool().oneOf([true], "Please read and accept the Terms & Conditions")
   });
 
   const validateChange = e => {
     yup
       .reach(formSchema, e.target.name)
-      .validate(e.target.value)
+      .validate(e.target.type === "checkbox" ? e.target.checked : e.target.value)
       .then(valid => {
         setErrors({ ...errors, [e.target.name]: "" });
       })
@@ -74,14 +76,16 @@ const Form = () => {
     e.persist();
     const newFormData = {
       ...formState,
-      [e.target.name]: e.target.type === "checkbox" ? e.target.checked : e.target.value
+      [e.target.name]:
+        e.target.type === "checkbox" ? e.target.checked : e.target.value
     };
     validateChange(e);
     setFormState(newFormData);
   };
 
+
   return (
-    <FormDiv>
+    <FormDiv onSubmit={formSubmit}>
       <Label htmlFor="name">
         Name:
         <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} />
@@ -100,17 +104,16 @@ const Form = () => {
         {errors.password.length > 0 ? <p className="error">{errors.password}</p> : null}
       </Label>
 
-      <Label htmlFor="terms">
+      <Label htmlFor="terms" className="terms">
         <Input type="checkbox" name="terms" id="terms" checked={formState.terms} onChange={inputChange} />
         Terms & Conditions
         {errors.terms.length > 0 ? <p className="error">{errors.terms}</p> : null}
       </Label>
 
+      <SubmitButton type="submit" disabled={isButtonDisabled}>Submit</SubmitButton>
+
       <pre>{JSON.stringify(post, null, 2)}</pre>
 
-      <Label htmlFor="submit">
-        <SubmitButton type="submit" disabled={isButtonDisabled}>Submit</SubmitButton>
-      </Label>
     </FormDiv>
   );
 }
