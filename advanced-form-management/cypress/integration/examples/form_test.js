@@ -7,9 +7,9 @@ describe("Testing form input", () => {
     // use an assertion to check if the text inputted contains the name you provided
     cy.get('[data-cy="name"]').type("Derek").should("have.value", "Derek");
     // get the email input and type an email address into it
-    cy.get('[data-cy="email"]').type("dcornelison1216@gmail.com").should("have.value", "dcornelison1216@gmail.com");
+    cy.get('[data-cy="email"]').type("dcornelison1216@gmail.com");
     // get the password input and type a password into it
-    cy.get('[data-cy="password"]').type("passwordpassword").should("have.value", "passwordpassword");
+    cy.get('[data-cy="password"]').type("passwordpassword");
     // set up a test that will check to see if a user can check the terms of service box
     cy.get('[type="checkbox"]').check().should("be.checked");
     // check to see if a user can submit the form data
