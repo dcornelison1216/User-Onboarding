@@ -19,7 +19,7 @@ color: white;
 
 export const UserCard = styled.div`
 background: linear-gradient(90deg, #b2c1ff 0%,#fffba3 80%);
-max-width: 250px;
+max-width: 350px;
 box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, .5), 5px 5px 5px rgba(0, 0, 0, .25);
 padding: 10px;
 margin: 1rem;
