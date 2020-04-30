@@ -69,19 +69,19 @@ const Form = () => {
         <FormHeader>Become a new user!</FormHeader>
         <NameLabel htmlFor="name">
           Name:
-          <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} />
+          <Input id="name" type="text" name="name" onChange={inputChange} value={formState.name} data-cy="name" />
           {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
         </NameLabel>
 
         <EmailLabel htmlFor="email">
           Email:
-          <Input id="email" type="text" name="email" onChange={inputChange} value={formState.email} />
+          <Input id="email" type="text" name="email" onChange={inputChange} value={formState.email} data-cy="email" />
           {errors.email.length > 0 ? <p className="error">{errors.email}</p> : null}
         </EmailLabel>
 
         <Label htmlFor="password">
           Password:
-          <Input id="password" type="text" name="password" onChange={inputChange} value={formState.password} />
+          <Input id="password" type="text" name="password" onChange={inputChange} value={formState.password} data-cy="password" />
           {errors.password.length > 0 ? <p className="error">{errors.password}</p> : null}
         </Label>
 
